@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// generator client {
+//   provider        = "prisma-client-js"
+//   previewFeatures = ["referentialIntegrity"]
+// }
+
+// datasource db {
+//   provider             = "mysql"
+//   url                  = env("DATABASE_URL")
+//   referentialIntegrity = "prisma"
+// }
+
+generator client {
+
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+
+  provider = "sqlite"
+
+  url = "file:./dev.db"
+
+}
+
+model User {
+  id       String    @id @default(cuid())
+  email    String    @unique
+  name     String?
+  comments Comment[]
+  movies   Movie[]
+}
+
+model Comment {
+  id        String @id @default(cuid())
+  text      String
+  userId    String
+  createdAt Int
+  user      User   @relation(fields: [userId], references: [id])
+  movie     Movie  @relation(fields: [movieId], references: [id])
+  movieId   Int
+}
+
+model Movie {
+  id            Int       @id @default(autoincrement())
+  title         String?
+  name          String?
+  backdrop_path String
+  release_date  String?
+  original_name String?
+  overview      String?
+  popularity    Int?
+  poster_path   String?
+  vote_average  Int?
+  vote_count    Int?
+  tagline       Int?
+  createdAt     DateTime?
+  Comment       Comment[]
+  User          User?     @relation(fields: [userId], references: [id])
+  userId        String?
+}
